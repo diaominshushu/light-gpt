@@ -1,13 +1,15 @@
+import { useEffect } from 'react';
+import type { AppProps } from 'next/app';
+import { appWithTranslation } from 'next-i18next';
 import '@/styles/globals.scss';
 import 'normalize.css';
 
-// code hight
-import 'highlight.js/styles/atom-one-dark.css';
+import i18n from '../i18n';
 
-import type { AppProps } from 'next/app';
-import { useEffect } from 'react';
+function App({ Component, pageProps }: AppProps) {
+    // 设置默认语言
+    i18n.changeLanguage('zh');
 
-export default function App({ Component, pageProps }: AppProps) {
     useEffect(() => {
         if (
             /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -15,9 +17,13 @@ export default function App({ Component, pageProps }: AppProps) {
             )
         ) {
             const app = document.querySelector('#app') as HTMLElement;
-            if (!app) return;
+            const appAside = document.querySelector('#appAside') as HTMLElement;
+            if (!app || !appAside) return;
             app.style.height = window.innerHeight + 'px';
+            appAside.style.height = window.innerHeight + 'px';
         }
     }, []);
     return <Component {...pageProps} />;
 }
+
+export default appWithTranslation(App);

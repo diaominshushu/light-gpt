@@ -1,6 +1,8 @@
 import React, { useRef, useState } from 'react';
 import AvatarEditor from 'react-avatar-editor';
 
+import { useTranslation } from 'next-i18next';
+
 import styles from './index.module.scss';
 
 const AvatarUploader: React.FC<{
@@ -39,11 +41,10 @@ const AvatarUploader: React.FC<{
     };
 
     const handleSave = () => {
-        console.log('点击保存--', editor.current);
         if (editor.current && avatar.img) {
             const canvas = editor.current.getImage();
             const dataURL = canvas.toDataURL();
-            console.log('保存--', dataURL);
+
             // 处理获取到的dataURL
             updateAvatar?.(dataURL);
         }
@@ -61,6 +62,8 @@ const AvatarUploader: React.FC<{
     const handleRotateRight = () => {
         setAvatar((state) => ({ ...state, rotate: state.rotate + 90 }));
     };
+
+    const { t } = useTranslation();
 
     return (
         <div className={styles.avatarUploader}>
@@ -112,7 +115,7 @@ const AvatarUploader: React.FC<{
                 />
             </div>
             <button className={styles.saveButton} onClick={handleSave}>
-                save
+                {t('save')}
             </button>
         </div>
     );

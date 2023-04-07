@@ -4,6 +4,23 @@ import {
     ReconnectInterval,
 } from 'eventsource-parser';
 
+import CryptoJS from 'crypto-js';
+
+export const SECRET_KEY =
+    '64787423c7ea99e608bab61303b309a996a1e000db87bd73533bd979892b1644';
+
+export const encryptApiKey = (apiKey: string) => {
+    const encryptedApiKey = CryptoJS.AES.encrypt(apiKey, SECRET_KEY).toString();
+    return encryptedApiKey;
+};
+
+export const decryptApiKey = (encryptedApiKey: string) => {
+    // 使用AES加密算法进行解密
+    const bytes = CryptoJS.AES.decrypt(encryptedApiKey, SECRET_KEY);
+    const decryptedApiKey = bytes.toString(CryptoJS.enc.Utf8);
+    return decryptedApiKey;
+};
+
 export const parseOpenAIStream = (rawResponse: Response) => {
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
@@ -64,8 +81,28 @@ export const readBlobAsDataURL = (blob: Blob): Promise<string> => {
     });
 };
 
+export const formatTimestamp = (timestamp: number) => {
+    const length = timestamp.toString().length;
+    if (length === 10) {
+        timestamp *= 1000; // 转换为毫秒
+    }
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const formattedDate =
+        year +
+        '/' +
+        (month > 9 ? month : `0${month}`) +
+        '/' +
+        (day > 9 ? day : `0${day}`);
+    return formattedDate;
+};
+
 export const ThemeLocalKey = 'light_gpt_theme';
 export const UserAvatarLocalKey = 'light_gpt_user_avatar';
 export const RobotAvatarLocalKey = 'light_gpt_robot_avatar';
 export const SystemRoleLocalKey = 'light_gpt_system_role';
 export const APIKeyLocalKey = 'light_gpt_api_key';
+
+export const GenerateImagePromptPrefix = 'img-';
